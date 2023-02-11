@@ -36,6 +36,7 @@ CREATE TABLE
     `scholarship` (
         `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '奖学金id',
         `name` VARCHAR(255) NOT NULL COMMENT '奖学金名称',
+        `college_id` BIGINT NOT NUll COMMENT '学院id',
         `start_time` DATETIME NOT NULL COMMENT '开始时间',
         `end_time` DATETIME NOT NULL COMMENT '结束时间',
         PRIMARY KEY(`id`)

@@ -1,0 +1,9 @@
+jwt_secret = "scholarship arrangement system"
+max_ping_count = 3
+url = "http://127.0.0.1:8080"
+
+[mysql]
+dbname = "reward"
+addr = "localhost:3306"
+username = "mochigo"
+password = "1234"
