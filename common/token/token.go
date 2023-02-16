@@ -16,12 +16,14 @@ import (
 var jwtKey string
 
 type PayLoad struct {
-	UserID  int           `json:"user_id"`
-	Expired time.Duration `json:"expired"`
+	UserID    int           `json:"user_id"`
+	CollegeId int           `json:"college_id"`
+	Expired   time.Duration `json:"expired"`
 }
 
 type ParsedPayLoad struct {
 	UserID    int   `json:"user_id"`
+	CollegeId int   `json:"college_id"`
 	ExpiresAt int64 `json:"expires_at"` // 过期时间（时间戳，10位）
 }
 
@@ -37,6 +39,7 @@ func GenerateToken(payload *PayLoad) (string, error) {
 	//设置token有效时间
 	claims := &Claims{
 		UserID:    payload.UserID,
+		CollegeId: payload.CollegeId,
 		ExpiresAt: time.Now().Unix() + int64(payload.Expired.Seconds()),
 	}
 
@@ -71,6 +74,7 @@ func ParseToken(tokenStr string) (*ParsedPayLoad, error) {
 	t := &ParsedPayLoad{
 		UserID:    claims.UserID,
 		ExpiresAt: claims.ExpiresAt,
+		CollegeId: claims.CollegeId,
 	}
 
 	return t, nil

@@ -13,6 +13,7 @@ import (
 	"Reward/config"
 	"Reward/log"
 	"Reward/model"
+	"Reward/router"
 )
 
 func main() {
@@ -36,6 +37,7 @@ func main() {
 	}()
 
 	g := gin.New()
+	router.Load(g)
 }
 
 func pingServer() error {

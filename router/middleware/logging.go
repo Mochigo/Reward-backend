@@ -7,12 +7,12 @@ import (
 	"io/ioutil"
 	"time"
 
-	"github.com/MuxiKeStack/muxiK-StackBackend/handler"
-	"github.com/MuxiKeStack/muxiK-StackBackend/pkg/errno"
 	"github.com/gin-gonic/gin"
 	"github.com/willf/pad"
 	"go.uber.org/zap"
 
+	"Reward/common/errno"
+	"Reward/common/response"
 	"Reward/log"
 )
 
@@ -67,7 +67,7 @@ func Logging() gin.HandlerFunc {
 		code, message := -1, ""
 
 		// get code and message
-		var response handler.Response
+		var response response.Response
 		if err := json.Unmarshal(blw.body.Bytes(), &response); err != nil {
 			log.Error("JSON unmarshal failed",
 				zap.String("reason", err.Error()),

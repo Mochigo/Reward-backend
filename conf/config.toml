@@ -1,6 +1,8 @@
 jwt_secret = "scholarship arrangement system"
 max_ping_count = 3
 url = "http://127.0.0.1:8080"
+file_storage = "../statics"
+token_expired = 7200
 
 [mysql]
 dbname = "reward"
