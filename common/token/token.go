@@ -28,7 +28,7 @@ type ParsedPayLoad struct {
 }
 
 func getJwtKey() string {
-	if jwtKey == common.StringEmpry {
+	if jwtKey == common.StringEmpty {
 		jwtKey = viper.GetString("jwt_secret")
 	}
 	return jwtKey

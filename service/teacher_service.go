@@ -39,7 +39,7 @@ func (s *TeacherService) VerifyTeacher(uid, password string) (bool, error) {
 func (s *TeacherService) Sign(uid string) (string, error) {
 	teacher, err := s.teacherDao.GetTeacherByUID(model.DB.Self, uid)
 	if err != nil {
-		return common.StringEmpry, err
+		return common.StringEmpty, err
 	}
 
 	t, err := token.GenerateToken(&token.PayLoad{
@@ -48,7 +48,7 @@ func (s *TeacherService) Sign(uid string) (string, error) {
 		Expired:   time.Duration(viper.GetInt("token_expired") * int(time.Second)),
 	})
 	if err != nil {
-		return common.StringEmpry, err
+		return common.StringEmpty, err
 	}
 
 	return t, nil

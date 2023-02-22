@@ -11,9 +11,12 @@ require (
 require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fsnotify/fsnotify v1.6.0
-	github.com/satori/go.uuid v1.2.0 // indirect
+	github.com/satori/go.uuid v1.2.0
+	github.com/shirou/gopsutil v3.21.11+incompatible
 	github.com/spf13/viper v1.15.0
-	github.com/willf/pad v0.0.0-20200313202418-172aa767f2a4 // indirect
+	github.com/tklauser/go-sysconf v0.3.11 // indirect
+	github.com/willf/pad v0.0.0-20200313202418-172aa767f2a4
+	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.uber.org/zap v1.24.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1
 )

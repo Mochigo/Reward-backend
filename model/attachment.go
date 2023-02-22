@@ -29,9 +29,14 @@ func GetAttachmentDao() *AttachmentDao {
 }
 
 func (*AttachmentDao) Create(db *gorm.DB, a *Attachment) error {
-	err := db.Model(&Attachment{}).Create(a).Error
-	if err != nil {
-		return err
+	return db.Model(&Attachment{}).Create(a).Error
+}
+
+func (*AttachmentDao) GetListByScholarshipId(db *gorm.DB, id int64) ([]*Attachment, error) {
+	attachments := make([]*Attachment, 0)
+	if err := db.Model(&Attachment{}).Where("id = ?", id).Find(&attachments).Error; err != nil {
+		return nil, err
 	}
-	return nil
+
+	return attachments, nil
 }

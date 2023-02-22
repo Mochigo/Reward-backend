@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -20,7 +21,7 @@ func main() {
 	log.Init()
 	defer log.SyncLogger()
 
-	if err := config.Init(common.StringEmpry); err != nil {
+	if err := config.Init(common.StringEmpty); err != nil {
 		panic(err)
 	}
 
@@ -38,6 +39,9 @@ func main() {
 
 	g := gin.New()
 	router.Load(g)
+
+	log.Info(fmt.Sprintf("Start to listening the incoming requests on http address: %s", viper.GetString("port")))
+	log.Info(http.ListenAndServe(viper.GetString("port"), g).Error())
 }
 
 func pingServer() error {

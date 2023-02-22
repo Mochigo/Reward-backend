@@ -30,12 +30,13 @@ func UploadFile(c *gin.Context) {
 	resp := UploadFileResponse{make([]string, 0)}
 	files := form.File["files"]
 	for _, file := range files {
-		err := c.SaveUploadedFile(file, viper.GetString("file_storage"))
+		filename := filepath.Join(viper.GetString("file_storage"), file.Filename)
+		err := c.SaveUploadedFile(file, filename)
 		if err != nil {
 			response.SendInternalServerError(c, errno.ErrUploadFailed, nil, err.Error(), utils.GetUpFuncInfo(2))
 			return
 		}
-		resp.Urls = append(resp.Urls, filepath.Join(viper.GetString("file_storage"), file.Filename))
+		resp.Urls = append(resp.Urls, filepath.Join(viper.GetString("url"), filename))
 	}
 
 	response.SendResponse(c, errno.OK, resp)

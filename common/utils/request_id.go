@@ -9,10 +9,10 @@ import (
 func GetReqID(c *gin.Context) string {
 	v, ok := c.Get("X-Request-Id")
 	if !ok {
-		return common.StringEmpry
+		return common.StringEmpty
 	}
 	if requestID, ok := v.(string); ok {
 		return requestID
 	}
-	return common.StringEmpry
+	return common.StringEmpty
 }
