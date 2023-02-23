@@ -1,18 +1,19 @@
 package service
 
 import (
+	"github.com/gin-gonic/gin"
+
 	"Reward/common"
 	"Reward/common/utils"
 	"Reward/model"
 	"Reward/service/entity"
-
-	"github.com/gin-gonic/gin"
 )
 
 type ScholarshipService struct {
-	ctx            *gin.Context
-	scholarshipDao *model.ScholarshipDao
-	attchmentDao   *model.AttachmentDao
+	ctx                *gin.Context
+	scholarshipDao     *model.ScholarshipDao
+	attchmentDao       *model.AttachmentDao
+	scholarshipItemDao *model.ScholarshipItemDao
 }
 
 func NewScholarshipService(ctx *gin.Context) *ScholarshipService {
@@ -36,7 +37,7 @@ func (s *ScholarshipService) GetAttachments(req *entity.GetAttachmentsEntity) ([
 		return nil, err
 	}
 
-	attachments := make([]*entity.AttachmentEntity, 0)
+	attachments := make([]*entity.AttachmentEntity, 0, len(al))
 	for _, a := range al {
 		tmp := &entity.AttachmentEntity{
 			Url: a.Url,
@@ -63,4 +64,60 @@ func (s *ScholarshipService) CreateScholarship(req *entity.CreateScholarshipEnti
 		StartTime: start,
 		EndTime:   end,
 	})
+}
+
+func (s *ScholarshipService) GetScholarships(req *entity.GetScholarshipsEntity) ([]*entity.ScholarshipEntity, error) {
+	condi := make(map[string]interface{})
+	condi[common.CondiPage] = req.Page
+	condi[common.CondiLimit] = req.Limit
+	condi[common.CondiCollegeId] = req.CollegeId
+
+	sl, err := s.scholarshipDao.GetList(model.DB.Self, condi)
+	if err != nil {
+		return nil, err
+	}
+
+	scholarships := make([]*entity.ScholarshipEntity, 0, len(sl))
+	for _, s := range sl {
+		tmp := &entity.ScholarshipEntity{
+			Name:      s.Name,
+			CollegeId: s.CollegeId,
+			StartTime: s.StartTime.Format(utils.LayoutDateTime),
+			EndTime:   s.EndTime.Format(utils.LayoutDateTime),
+		}
+
+		scholarships = append(scholarships, tmp)
+	}
+
+	return scholarships, nil
+}
+
+func (s *ScholarshipService) AddScholarshipItem(req *entity.AddScholarshipItemEntity) error {
+	return s.scholarshipItemDao.Create(model.DB.Self, &model.ScholarshipItem{
+		Name:          req.Name,
+		ScholarshipId: req.ScholarshipId,
+	})
+}
+
+func (s *ScholarshipService) GetScholarshipItems(req *entity.GetScholarshipItemsEntity) ([]*entity.ScholarshipItemEntity, error) {
+	sil, err := s.scholarshipItemDao.GetList(model.DB.Self, req.ScholarshipId)
+	if err != nil {
+		return nil, err
+	}
+
+	scholarshipItems := make([]*entity.ScholarshipItemEntity, 0)
+	for _, si := range sil {
+		tmp := &entity.ScholarshipItemEntity{
+			Name:          si.Name,
+			ScholarshipId: si.ScholarshipId,
+		}
+
+		scholarshipItems = append(scholarshipItems, tmp)
+	}
+
+	return scholarshipItems, nil
+}
+
+func (s *ScholarshipService) RemoveScholarshipItem(req *entity.RemoveScholarshipItemEntity) error {
+	return s.scholarshipItemDao.DeleteByID(model.DB.Self, req.ScholarshipItemId)
 }

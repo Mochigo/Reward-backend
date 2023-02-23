@@ -51,8 +51,9 @@ func (*ScholarshipDao) GetList(db *gorm.DB, condi map[string]interface{}) ([]*Sc
 	var scholarships []*Scholarship
 	limit, _ := condi["limit"].(int)
 	page, _ := condi["page"].(int)
+	collegeId, _ := condi["college_id"].(int64)
 
-	if err := db.Model(&Scholarship{}).Where("college_id = ?", condi["college_id"]).Order("end_time desc").Offset((page - 1) * limit).Limit(limit).Find(&scholarships).Error; err != nil {
+	if err := db.Model(&Scholarship{}).Where("college_id = ?", collegeId).Order("end_time desc").Offset((page - 1) * limit).Limit(limit).Find(&scholarships).Error; err != nil {
 		return nil, err
 	}
 

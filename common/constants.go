@@ -21,6 +21,12 @@ const (
 	OperationReject  = "REJECT"
 )
 
+const (
+	CondiPage      = "page"
+	CondiLimit     = "limit"
+	CondiCollegeId = "college_id"
+)
+
 var (
 	ErrTimeParse = errors.New("fail to parse time")
 )

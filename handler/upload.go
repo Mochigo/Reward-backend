@@ -36,7 +36,7 @@ func UploadFile(c *gin.Context) {
 			response.SendInternalServerError(c, errno.ErrUploadFailed, nil, err.Error(), utils.GetUpFuncInfo(2))
 			return
 		}
-		resp.Urls = append(resp.Urls, filepath.Join(viper.GetString("url"), filename))
+		resp.Urls = append(resp.Urls, viper.GetString("url")+"/"+filename)
 	}
 
 	response.SendResponse(c, errno.OK, resp)

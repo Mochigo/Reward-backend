@@ -7,9 +7,11 @@ import (
 	"github.com/spf13/viper"
 
 	"Reward/handler"
+	"Reward/handler/application"
 	"Reward/handler/attachment"
 	"Reward/handler/certificate"
 	"Reward/handler/login"
+	"Reward/handler/scholarship"
 	"Reward/handler/sd"
 	"Reward/router/middleware"
 )
@@ -41,10 +43,10 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	// certificate
 	certificateRouter := version.Group("/certificate")
 	{
-		certificateRouter.POST("/", certificate.AddCertificate)
+		certificateRouter.POST("", certificate.AddCertificate)
 		certificateRouter.GET("/list", certificate.GetCertificates)
 		certificateRouter.PUT("/audit", certificate.AuditCertificate)
-		certificateRouter.DELETE("/", certificate.RemoveCertificate)
+		certificateRouter.DELETE("", certificate.RemoveCertificate)
 	}
 
 	// scholarship
@@ -52,12 +54,24 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	{
 		scholarshipRouter.POST("/attchment", attachment.AddAttachment)
 		scholarshipRouter.GET("/attchments", attachment.GetAttachments)
+
+		scholarshipRouter.POST("", scholarship.CreateScholarship)
+		scholarshipRouter.GET("/list", scholarship.GetScholarships)
+
+		scholarshipRouter.POST("/item", scholarship.AddScholarshipItem)
+		scholarshipRouter.GET("/items/list", scholarship.GetScholarshipItems)
+		scholarshipRouter.DELETE("/item", scholarship.RemoveScholarshipItem)
+	}
+
+	applicationRouter := version.Group("/application")
+	{
+		applicationRouter.POST("", application.CreateApplication)
 	}
 
 	// upload
 	uploadRouter := version.Group("/upload")
 	{
-		uploadRouter.POST("/", handler.UploadFile)
+		uploadRouter.POST("", handler.UploadFile)
 	}
 
 	// The health check handlers

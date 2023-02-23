@@ -1,15 +1,15 @@
-package handler
+package scholarship
 
 import (
+	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
+
 	"Reward/common/errno"
 	"Reward/common/response"
 	"Reward/common/utils"
 	"Reward/log"
 	"Reward/service"
 	"Reward/service/entity"
-
-	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
 )
 
 type CreateScholarshipRequest struct {

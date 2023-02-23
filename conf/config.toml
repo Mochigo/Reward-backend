@@ -3,7 +3,7 @@ max_ping_count = 3
 file_storage = "./statics"
 token_expired = 7200
 port = ":4096"
-url = "http://127.0.0.1:4096"
+url = "http://localhost:4096"
 
 [mysql]
 dbname = "reward"

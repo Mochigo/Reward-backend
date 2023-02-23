@@ -1,4 +1,4 @@
-package attachment
+package application
 
 import (
 	"github.com/gin-gonic/gin"
@@ -12,29 +12,29 @@ import (
 	"Reward/service/entity"
 )
 
-type GetAttachmentsRequest struct {
-	ScholarshipId int64 `json:"scholarship_id"`
+type CreateApplicationRequest struct {
+	ScholarshipItemId int64 `json:"scholarship_item_id"` // 奖学金子项id
+	ScholarshipId     int64 `json:"scholarship_id"`      // 奖学金id
 }
 
-func GetAttachments(c *gin.Context) {
-	log.Info("GetAttachments called.",
+func CreateApplication(c *gin.Context) {
+	log.Info("CreateApplication called.",
 		zap.String("X-Request-Id", utils.GetReqID(c)))
 
-	var req GetAttachmentsRequest
+	var req CreateApplicationRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.SendBadRequest(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
 		return
 	}
 
-	entity := &entity.GetAttachmentsEntity{}
+	entity := &entity.CreateApplicationEntity{}
 	_ = utils.ConvertEntity(&req, entity)
 
-	scholarshipService := service.NewScholarshipService(c)
-	list, err := scholarshipService.GetAttachments(entity)
-	if err != nil {
+	applicationService := service.NewApplicationService(c)
+	if err := applicationService.CreateApplication(entity); err != nil {
 		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
 		return
 	}
 
-	response.SendResponse(c, nil, list)
+	response.SendResponse(c, nil, nil)
 }
