@@ -18,6 +18,10 @@ type CreateScholarshipRequest struct {
 	EndTime   string `json:"end_time"`
 }
 
+type CreateScholarshipResponse struct {
+	Id int64 `json:"scholarship_id"`
+}
+
 func CreateScholarship(c *gin.Context) {
 	log.Info("CreateScholarship called.",
 		zap.String("X-Request-Id", utils.GetReqID(c)))
@@ -32,10 +36,12 @@ func CreateScholarship(c *gin.Context) {
 	_ = utils.ConvertEntity(&req, entity)
 
 	scholarshipService := service.NewScholarshipService(c)
-	if err := scholarshipService.CreateScholarship(entity); err != nil {
+	scholarshipId, err := scholarshipService.CreateScholarship(entity)
+	if err != nil {
 		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
 		return
 	}
-
-	response.SendResponse(c, nil, nil)
+	response.SendResponse(c, nil, CreateScholarshipResponse{
+		Id: scholarshipId,
+	})
 }

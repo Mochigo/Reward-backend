@@ -47,39 +47,40 @@ func (s *ScholarshipService) GetAttachments(req *entity.GetAttachmentsEntity) ([
 	return attachments, nil
 }
 
-func (s *ScholarshipService) CreateScholarship(req *entity.CreateScholarshipEntity) error {
+func (s *ScholarshipService) CreateScholarship(req *entity.CreateScholarshipEntity) (int64, error) {
 	start, err := utils.GetDateTime(req.StartTime)
 	if err != nil {
-		return common.ErrTimeParse
+		return 0, common.ErrTimeParse
 	}
 
 	end, err := utils.GetDateTime(req.EndTime)
 	if err != nil {
-		return common.ErrTimeParse
+		return 0, common.ErrTimeParse
 	}
 
 	return s.scholarshipDao.Create(model.DB.Self, &model.Scholarship{
 		Name:      req.Name,
-		CollegeId: s.ctx.GetInt64("collegeID"),
+		CollegeId: int64(s.ctx.GetInt(common.TokenCollegeID)),
 		StartTime: start,
 		EndTime:   end,
 	})
 }
 
-func (s *ScholarshipService) GetScholarships(req *entity.GetScholarshipsEntity) ([]*entity.ScholarshipEntity, error) {
+func (s *ScholarshipService) GetScholarships(req *entity.GetScholarshipsEntity) ([]*entity.ScholarshipEntity, int64, error) {
 	condi := make(map[string]interface{})
 	condi[common.CondiPage] = req.Page
 	condi[common.CondiLimit] = req.Limit
-	condi[common.CondiCollegeId] = req.CollegeId
+	condi[common.CondiCollegeId] = s.ctx.GetInt(common.TokenCollegeID)
 
 	sl, err := s.scholarshipDao.GetList(model.DB.Self, condi)
 	if err != nil {
-		return nil, err
+		return nil, 0, err
 	}
 
 	scholarships := make([]*entity.ScholarshipEntity, 0, len(sl))
 	for _, s := range sl {
 		tmp := &entity.ScholarshipEntity{
+			Id:        s.Id,
 			Name:      s.Name,
 			CollegeId: s.CollegeId,
 			StartTime: s.StartTime.Format(utils.LayoutDateTime),
@@ -89,7 +90,11 @@ func (s *ScholarshipService) GetScholarships(req *entity.GetScholarshipsEntity) 
 		scholarships = append(scholarships, tmp)
 	}
 
-	return scholarships, nil
+	total, err := s.scholarshipDao.GetCountByCollegeId(model.DB.Self, s.ctx.GetInt(common.TokenCollegeID))
+	if err != nil {
+		return nil, 0, err
+	}
+	return scholarships, total, nil
 }
 
 func (s *ScholarshipService) AddScholarshipItem(req *entity.AddScholarshipItemEntity) error {
@@ -108,6 +113,7 @@ func (s *ScholarshipService) GetScholarshipItems(req *entity.GetScholarshipItems
 	scholarshipItems := make([]*entity.ScholarshipItemEntity, 0)
 	for _, si := range sil {
 		tmp := &entity.ScholarshipItemEntity{
+			Id:            si.Id,
 			Name:          si.Name,
 			ScholarshipId: si.ScholarshipId,
 		}

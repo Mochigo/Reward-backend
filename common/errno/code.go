@@ -8,8 +8,9 @@ var (
 
 	ErrTokenGenerate = &Errno{Code: 20003, Message: "Error occurred while signing the JSON web token."}
 
-	ErrTokenInvalid = &Errno{Code: 20101, Message: "The token was invalid."}
-	ErrAuthFailed   = &Errno{Code: 20101, Message: "The sid or password was incorrect."}
+	ErrTokenInvalid          = &Errno{Code: 20101, Message: "The token was invalid."}
+	ErrAuthFailed            = &Errno{Code: 20102, Message: "The sid or password was incorrect."}
+	ErrRequiredParamsMissing = &Errno{Code: 20103, Message: "Missing required query params"}
 
 	// upload errors
 	ErrFileNotFound = &Errno{Code: 20301, Message: "File not found"}

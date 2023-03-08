@@ -16,6 +16,7 @@ type AttachmentEntity struct {
 
 // scholarship
 type ScholarshipEntity struct {
+	Id        int64  `json:"scholarship_id"`
 	Name      string `json:"name"`       // 奖学金名称
 	CollegeId int64  `json:"college_id"` // 学院id
 	StartTime string `json:"start_time"` // 开始时间
@@ -29,9 +30,8 @@ type CreateScholarshipEntity struct {
 }
 
 type GetScholarshipsEntity struct {
-	CollegeId int64 `json:"college_id"`
-	Page      int   `json:"page"`
-	Limit     int   `json:"limit"`
+	Page  int `json:"page"`
+	Limit int `json:"limit"`
 }
 
 // scholarshipItem
@@ -45,6 +45,7 @@ type GetScholarshipItemsEntity struct {
 }
 
 type ScholarshipItemEntity struct {
+	Id            int64  `json:"id"`
 	Name          string `json:"name"` // 奖学金子项名称
 	ScholarshipId int64  `json:"scholarship_id"`
 }

@@ -44,3 +44,11 @@ func (*ScholarshipItemDao) GetList(db *gorm.DB, scholarshipId int64) ([]*Scholar
 
 	return scholarshipItemList, nil
 }
+
+func (*ScholarshipItemDao) BatchGetByIds(db *gorm.DB, scholarshipIds []int64) ([]*ScholarshipItem, error) {
+	scholarshipItemList := make([]*ScholarshipItem, 0)
+	if err := db.Model(&ScholarshipItem{}).Where("scholarship_id IN ?", scholarshipIds).Find(&scholarshipItemList).Error; err != nil {
+		return nil, err
+	}
+	return scholarshipItemList, nil
+}

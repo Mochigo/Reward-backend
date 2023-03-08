@@ -1,6 +1,7 @@
 package model
 
 import (
+	"Reward/common"
 	"sync"
 	"time"
 
@@ -31,12 +32,12 @@ func GetScholarshipDao() *ScholarshipDao {
 	return scholarshipDao
 }
 
-func (*ScholarshipDao) Create(db *gorm.DB, s *Scholarship) error {
+func (*ScholarshipDao) Create(db *gorm.DB, s *Scholarship) (int64, error) {
 	err := db.Model(&Scholarship{}).Create(s).Error
 	if err != nil {
-		return err
+		return 0, err
 	}
-	return nil
+	return s.Id, nil
 }
 
 func (*ScholarshipDao) DeleteByID(db *gorm.DB, id int64) error {
@@ -48,14 +49,21 @@ func (*ScholarshipDao) DeleteByID(db *gorm.DB, id int64) error {
 }
 
 func (*ScholarshipDao) GetList(db *gorm.DB, condi map[string]interface{}) ([]*Scholarship, error) {
-	var scholarships []*Scholarship
-	limit, _ := condi["limit"].(int)
-	page, _ := condi["page"].(int)
-	collegeId, _ := condi["college_id"].(int64)
-
-	if err := db.Model(&Scholarship{}).Where("college_id = ?", collegeId).Order("end_time desc").Offset((page - 1) * limit).Limit(limit).Find(&scholarships).Error; err != nil {
+	scholarships := make([]*Scholarship, 0)
+	limit := condi[common.CondiLimit].(int)
+	page := condi[common.CondiPage].(int)
+	collegeId := condi[common.CondiCollegeId].(int)
+	if err := db.Where("college_id = ?", collegeId).Order("end_time desc").Offset((page - 1) * limit).Limit(limit).Find(&scholarships).Error; err != nil {
 		return nil, err
 	}
 
 	return scholarships, nil
+}
+
+func (*ScholarshipDao) GetCountByCollegeId(db *gorm.DB, collegeId int) (int64, error) {
+	var total int64
+	if err := db.Model(&Scholarship{}).Where("college_id = ?", collegeId).Count(&total).Error; err != nil {
+		return 0, err
+	}
+	return total, nil
 }

@@ -31,7 +31,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		c.String(http.StatusNotFound, "The incorrect API route.")
 	})
 
-	version := g.Group("api/v1.0")
+	version := g.Group("/api/v1.0")
 
 	// login
 	loginRouter := version.Group("/login")
@@ -50,7 +50,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	}
 
 	// scholarship
-	scholarshipRouter := version.Group("/scholarship")
+	scholarshipRouter := version.Group("/scholarship", middleware.AuthMiddleware())
 	{
 		scholarshipRouter.POST("/attchment", attachment.AddAttachment)
 		scholarshipRouter.GET("/attchments", attachment.GetAttachments)
@@ -63,9 +63,10 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		scholarshipRouter.DELETE("/item", scholarship.RemoveScholarshipItem)
 	}
 
-	applicationRouter := version.Group("/application")
+	applicationRouter := version.Group("/application", middleware.AuthMiddleware())
 	{
 		applicationRouter.POST("", application.CreateApplication)
+		applicationRouter.GET("/list", application.GetUserApplication)
 	}
 
 	// upload

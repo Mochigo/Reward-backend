@@ -25,6 +25,12 @@ const (
 	CondiPage      = "page"
 	CondiLimit     = "limit"
 	CondiCollegeId = "college_id"
+	CondiStudentId = "student_id"
+)
+
+const (
+	TokenUserID    = "userID"
+	TokenCollegeID = "collegeID"
 )
 
 var (

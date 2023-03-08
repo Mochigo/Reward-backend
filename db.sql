@@ -71,6 +71,14 @@ CREATE TABLE
         UNIQUE KEY `uniq_idx_uid` (`uid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT '学生表';
 
+INSERT INTO
+    `student` (
+        `uid`,
+        `password`,
+        `college_id`
+    )
+VALUES ('2019213794', '1234', 1);
+
 CREATE TABLE
     `teacher` (
         `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '学生id',
@@ -97,3 +105,5 @@ CREATE TABLE
         `name` VARCHAR(255) NOT NULL COMMENT '学院名称',
         PRIMARY KEY(`id`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT '学院表';
+
+INSERT INTO `college` ( `name` ) VALUES ('计算机学院');

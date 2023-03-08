@@ -1,6 +1,7 @@
 package model
 
 import (
+	"Reward/common"
 	"sync"
 
 	"gorm.io/gorm"
@@ -32,4 +33,25 @@ func GetApplicationDao() *ApplicationDao {
 
 func (*ApplicationDao) Create(db *gorm.DB, a *Application) error {
 	return db.Model(&Application{}).Create(a).Error
+}
+
+func (*ApplicationDao) GetList(db *gorm.DB, condi map[string]interface{}) ([]*Application, error) {
+	applications := make([]*Application, 0)
+	limit := condi[common.CondiLimit].(int)
+	page := condi[common.CondiPage].(int)
+	studentId := condi[common.CondiStudentId].(int)
+	if err := db.Where("student_id = ?", studentId).Offset((page - 1) * limit).Limit(limit).Find(&applications).Error; err != nil {
+		return nil, err
+	}
+
+	return applications, nil
+}
+
+func (*ApplicationDao) GetCountByStudentId(db *gorm.DB, studentId int) (int64, error) {
+	var total int64
+	if err := db.Model(&Application{}).Where("student_id = ?", studentId).Count(&total).Error; err != nil {
+		return 0, err
+	}
+
+	return total, nil
 }

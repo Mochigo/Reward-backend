@@ -3,6 +3,7 @@ package middleware
 import (
 	"github.com/gin-gonic/gin"
 
+	"Reward/common"
 	"Reward/common/errno"
 	"Reward/common/response"
 	"Reward/common/token"
@@ -25,8 +26,8 @@ func AuthMiddleware() gin.HandlerFunc {
 			return
 		}
 
-		c.Set("userID", payload.UserID)
-		c.Set("collegeID", payload.CollegeId)
+		c.Set(common.TokenUserID, payload.UserID)
+		c.Set(common.TokenCollegeID, payload.CollegeId)
 
 		c.Next()
 	}
