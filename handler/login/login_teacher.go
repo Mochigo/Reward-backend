@@ -13,6 +13,11 @@ import (
 	"Reward/service"
 )
 
+type LoginTeacherResponse struct {
+	Token string `json:"token"`
+	Role  string `json:"role"`
+}
+
 func LoginTeacher(c *gin.Context) {
 	log.Info("LoginTeacher called.",
 		zap.String("X-Request-Id", utils.GetReqID(c)))
@@ -40,7 +45,14 @@ func LoginTeacher(c *gin.Context) {
 		return
 	}
 
-	response.SendResponse(c, errno.OK, &LoginResponse{
+	role, err := teacherService.GetTeacherRole(req.UID)
+	if err != nil {
+		response.SendInternalServerError(c, errno.ErrGetTeacherRole, nil, err.Error(), utils.GetUpFuncInfo(2))
+		return
+	}
+
+	response.SendResponse(c, errno.OK, &LoginTeacherResponse{
 		Token: token,
+		Role:  role,
 	})
 }

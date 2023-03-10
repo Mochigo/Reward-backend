@@ -81,8 +81,7 @@ VALUES ('2019213794', '1234', 1);
 
 CREATE TABLE
     `teacher` (
-        `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '学生id',
-        `score` DOUBLE NOT NUll DEFAULT 0 COMMENT '学生学分绩',
+        `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '教师id',
         `uid` VARCHAR(30) NOT NULL COMMENT '教师编号',
         `password` VARCHAR(255) NOT NULL COMMENT '账号密码，默认为教师编号',
         `college_id` BIGINT NOT NUll COMMENT '学院id',

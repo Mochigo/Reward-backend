@@ -15,4 +15,7 @@ var (
 	// upload errors
 	ErrFileNotFound = &Errno{Code: 20301, Message: "File not found"}
 	ErrUploadFailed = &Errno{Code: 20303, Message: "Fail to upload file"}
+
+	// login errors
+	ErrGetTeacherRole = &Errno{Code: 20401, Message: "Fail to get teacher's role"}
 )

@@ -36,6 +36,15 @@ func (s *TeacherService) VerifyTeacher(uid, password string) (bool, error) {
 	return true, nil
 }
 
+func (s *TeacherService) GetTeacherRole(uid string) (string, error) {
+	teacher, err := s.teacherDao.GetTeacherByUID(model.DB.Self, uid)
+	if err != nil {
+		return "", err
+	}
+
+	return teacher.Role, nil
+}
+
 func (s *TeacherService) Sign(uid string) (string, error) {
 	teacher, err := s.teacherDao.GetTeacherByUID(model.DB.Self, uid)
 	if err != nil {

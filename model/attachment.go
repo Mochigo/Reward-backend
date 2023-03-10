@@ -32,9 +32,9 @@ func (*AttachmentDao) Create(db *gorm.DB, a *Attachment) error {
 	return db.Model(&Attachment{}).Create(a).Error
 }
 
-func (*AttachmentDao) GetListByScholarshipId(db *gorm.DB, id int64) ([]*Attachment, error) {
+func (*AttachmentDao) GetListByScholarshipId(db *gorm.DB, scholarshipId int64) ([]*Attachment, error) {
 	attachments := make([]*Attachment, 0)
-	if err := db.Model(&Attachment{}).Where("id = ?", id).Find(&attachments).Error; err != nil {
+	if err := db.Model(&Attachment{}).Where("scholarship_id = ?", scholarshipId).Find(&attachments).Error; err != nil {
 		return nil, err
 	}
 
