@@ -10,7 +10,12 @@ type GetAttachmentsEntity struct {
 	ScholarshipId int64 `json:"scholarship_id"`
 }
 
+type RemoveAttachmentEntity struct {
+	AttachmentId int64 `json:"attachment_id"`
+}
+
 type AttachmentEntity struct {
+	Id  int64  `json:"attachment_id"`
 	Url string `json:"url"`
 }
 

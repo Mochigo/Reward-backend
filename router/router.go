@@ -53,6 +53,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	scholarshipRouter := version.Group("/scholarship", middleware.AuthMiddleware())
 	{
 		scholarshipRouter.POST("/attchment", attachment.AddAttachment)
+		scholarshipRouter.DELETE("/attchment", attachment.RemoveAttachment)
 		scholarshipRouter.GET("/attchments", attachment.GetAttachments)
 
 		scholarshipRouter.POST("", scholarship.CreateScholarship)

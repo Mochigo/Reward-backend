@@ -18,4 +18,7 @@ var (
 
 	// login errors
 	ErrGetTeacherRole = &Errno{Code: 20401, Message: "Fail to get teacher's role"}
+
+	// attchment errors
+	ErrDeleteAttachment = &Errno{Code: 20501, Message: "fail to delete attachment"}
 )

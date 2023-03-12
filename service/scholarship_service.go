@@ -31,6 +31,12 @@ func (s *ScholarshipService) AddAttachment(req *entity.AddAttachmentEntity) erro
 	})
 }
 
+func (s *ScholarshipService) RemoveAttachment(req *entity.RemoveAttachmentEntity) error {
+
+	return s.attchmentDao.DeleteByID(model.DB.Self, req.AttachmentId)
+
+}
+
 func (s *ScholarshipService) GetAttachments(req *entity.GetAttachmentsEntity) ([]*entity.AttachmentEntity, error) {
 	al, err := s.attchmentDao.GetListByScholarshipId(model.DB.Self, req.ScholarshipId)
 	if err != nil {
@@ -40,6 +46,7 @@ func (s *ScholarshipService) GetAttachments(req *entity.GetAttachmentsEntity) ([
 	attachments := make([]*entity.AttachmentEntity, 0, len(al))
 	for _, a := range al {
 		tmp := &entity.AttachmentEntity{
+			Id:  a.Id,
 			Url: a.Url,
 		}
 		attachments = append(attachments, tmp)

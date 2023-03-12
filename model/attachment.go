@@ -40,3 +40,7 @@ func (*AttachmentDao) GetListByScholarshipId(db *gorm.DB, scholarshipId int64) (
 
 	return attachments, nil
 }
+
+func (*AttachmentDao) DeleteByID(db *gorm.DB, id int64) error {
+	return db.Delete(&Attachment{}, id).Error
+}
