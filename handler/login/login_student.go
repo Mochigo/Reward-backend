@@ -35,11 +35,11 @@ func LoginStudent(c *gin.Context) {
 	studentService := service.NewStudentService(c)
 	ok, err := studentService.VerifyStudent(req.UID, req.Password)
 	if err != nil {
-		response.SendBadRequest(c, errno.ErrAuthFailed, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrAuthFailed, nil, err.Error(), utils.GetUpFuncInfo(2))
 		return
 	}
 	if !ok {
-		response.SendBadRequest(c, errno.ErrAuthFailed, nil, errors.New("没有对应用户").Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrAuthFailed, nil, errors.New("没有对应用户").Error(), utils.GetUpFuncInfo(2))
 		return
 	}
 

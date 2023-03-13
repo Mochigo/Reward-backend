@@ -55,3 +55,7 @@ func (*ApplicationDao) GetCountByStudentId(db *gorm.DB, studentId int) (int64, e
 
 	return total, nil
 }
+
+func (*ApplicationDao) DeleteByScholarshipItemId(db *gorm.DB, scholarshipItemId int) error {
+	return db.Where("scholarship_item_id = ?", scholarshipItemId).Delete(&Application{}).Error
+}

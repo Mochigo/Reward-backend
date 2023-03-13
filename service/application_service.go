@@ -57,6 +57,9 @@ func (s *ApplicationService) GetUserApplication(req *entity.GetUserApplicationEn
 
 	applications := make([]*entity.ApplicationEntity, 0, len(al))
 	for _, a := range al {
+		if _, ok := scholarshipItem[a.ScholarshipItemId]; !ok {
+			continue
+		}
 		tmp := &entity.ApplicationEntity{
 			Id:                  a.Id,
 			ScholarshipItemId:   a.ScholarshipItemId,

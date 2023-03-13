@@ -26,11 +26,11 @@ func RemoveAttachment(c *gin.Context) {
 		return
 	}
 
-	entity := &entity.AddAttachmentEntity{}
+	entity := &entity.RemoveAttachmentEntity{}
 	_ = utils.ConvertEntity(&req, entity)
 
 	scholarshipService := service.NewScholarshipService(c)
-	if err := scholarshipService.AddAttachment(entity); err != nil {
+	if err := scholarshipService.RemoveAttachment(entity); err != nil {
 		response.SendInternalServerError(c, errno.ErrDeleteAttachment, nil, err.Error(), utils.GetUpFuncInfo(2))
 		return
 	}

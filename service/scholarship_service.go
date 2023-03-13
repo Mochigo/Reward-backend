@@ -14,13 +14,16 @@ type ScholarshipService struct {
 	scholarshipDao     *model.ScholarshipDao
 	attchmentDao       *model.AttachmentDao
 	scholarshipItemDao *model.ScholarshipItemDao
+	applicationDao     *model.ApplicationDao
 }
 
 func NewScholarshipService(ctx *gin.Context) *ScholarshipService {
 	return &ScholarshipService{
-		ctx:            ctx,
-		scholarshipDao: model.GetScholarshipDao(),
-		attchmentDao:   model.GetAttachmentDao(),
+		ctx:                ctx,
+		scholarshipDao:     model.GetScholarshipDao(),
+		attchmentDao:       model.GetAttachmentDao(),
+		applicationDao:     model.GetApplicationDao(),
+		scholarshipItemDao: model.GetScholarshipItemDao(),
 	}
 }
 
@@ -132,5 +135,13 @@ func (s *ScholarshipService) GetScholarshipItems(req *entity.GetScholarshipItems
 }
 
 func (s *ScholarshipService) RemoveScholarshipItem(req *entity.RemoveScholarshipItemEntity) error {
-	return s.scholarshipItemDao.DeleteByID(model.DB.Self, req.ScholarshipItemId)
+	if err := s.scholarshipItemDao.DeleteByID(model.DB.Self, req.ScholarshipItemId); err != nil {
+		return err
+	}
+
+	if err := s.applicationDao.DeleteByScholarshipItemId(model.DB.Self, int(req.ScholarshipItemId)); err != nil {
+		return err
+	}
+
+	return nil
 }
