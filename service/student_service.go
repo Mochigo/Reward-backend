@@ -4,6 +4,7 @@ import (
 	"Reward/common"
 	"Reward/common/token"
 	"Reward/model"
+	"Reward/service/entity"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -13,12 +14,14 @@ import (
 type StudentService struct {
 	ctx        *gin.Context
 	studentDao *model.StudentDao
+	collegeDao *model.CollegeDao
 }
 
 func NewStudentService(ctx *gin.Context) *StudentService {
 	return &StudentService{
 		ctx:        ctx,
 		studentDao: model.GetStudentDao(),
+		collegeDao: model.GetCollegeDao(),
 	}
 }
 
@@ -52,4 +55,22 @@ func (s *StudentService) Sign(uid string) (string, error) {
 	}
 
 	return t, nil
+}
+
+func (s *StudentService) GetStudentInfo(sid int64) (*entity.StudentEntity, error) {
+	stu, err := s.studentDao.GetStudentById(model.DB.Self, sid)
+	if err != nil {
+		return nil, err
+	}
+
+	college, err := s.collegeDao.GetCollegeById(model.DB.Self, stu.CollegeId)
+	if err != nil {
+		return nil, err
+	}
+	return &entity.StudentEntity{
+		Id:      stu.Id,
+		Score:   stu.Score,
+		Uid:     stu.Uid,
+		College: college.Name,
+	}, nil
 }

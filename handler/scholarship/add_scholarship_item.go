@@ -23,7 +23,7 @@ func AddScholarshipItem(c *gin.Context) {
 
 	var req AddScholarshipItemRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.SendBadRequest(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
@@ -32,7 +32,7 @@ func AddScholarshipItem(c *gin.Context) {
 
 	scholarshipService := service.NewScholarshipService(c)
 	if err := scholarshipService.AddScholarshipItem(entity); err != nil {
-		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 

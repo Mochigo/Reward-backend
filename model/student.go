@@ -53,3 +53,22 @@ func (*StudentDao) GetStudentByUID(db *gorm.DB, uid string) (*Student, error) {
 
 	return s, nil
 }
+
+func (*StudentDao) GetStudentById(db *gorm.DB, id int64) (*Student, error) {
+	s := &Student{}
+	err := db.Model(&Student{}).Where("id = ?", id).Find(s).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		log.Error("[GetStudentByUID] record not found",
+			zap.Int64("id", id))
+		return nil, gorm.ErrRecordNotFound
+	}
+
+	if err != nil {
+		log.Error("[GetStudentByUID] failed to get",
+			zap.Int64("id", id),
+			zap.String("err", err.Error()))
+		return nil, err
+	}
+
+	return s, nil
+}

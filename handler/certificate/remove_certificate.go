@@ -22,7 +22,7 @@ func RemoveCertificate(c *gin.Context) {
 
 	var req RemoveCertificateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.SendBadRequest(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
@@ -31,7 +31,7 @@ func RemoveCertificate(c *gin.Context) {
 
 	cs := service.NewCertificateService(c)
 	if err := cs.RemoveCertificate(entity); err != nil {
-		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 

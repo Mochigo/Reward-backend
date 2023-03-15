@@ -34,7 +34,7 @@ func GetScholarships(c *gin.Context) {
 	scholarshipService := service.NewScholarshipService(c)
 	list, total, err := scholarshipService.GetScholarships(entity)
 	if err != nil {
-		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 

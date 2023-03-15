@@ -24,7 +24,7 @@ func AuditCertificate(c *gin.Context) {
 
 	var req AuditCertificateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.SendBadRequest(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
@@ -33,7 +33,7 @@ func AuditCertificate(c *gin.Context) {
 
 	cs := service.NewCertificateService(c)
 	if err := cs.AuditCertificate(entity); err != nil {
-		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 

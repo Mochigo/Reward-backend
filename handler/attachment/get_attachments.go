@@ -20,7 +20,7 @@ func GetAttachments(c *gin.Context) {
 
 	sid := c.Query("scholarship_id")
 	if len(sid) == 0 {
-		response.SendInternalServerError(c, errno.ErrRequiredParamsMissing, nil, "缺少scholarship_id", utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrRequiredParamsMissing, nil, "缺少scholarship_id")
 		return
 	}
 	scholarshipIid, _ := strconv.Atoi(sid)
@@ -32,7 +32,7 @@ func GetAttachments(c *gin.Context) {
 	scholarshipService := service.NewScholarshipService(c)
 	list, err := scholarshipService.GetAttachments(entity)
 	if err != nil {
-		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 

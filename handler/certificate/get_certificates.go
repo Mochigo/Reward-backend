@@ -1,6 +1,8 @@
 package certificate
 
 import (
+	"strconv"
+
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
@@ -12,28 +14,26 @@ import (
 	"Reward/service/entity"
 )
 
-type GetCertificatesRequest struct {
-	ApplicationId int64 `json:"application_id"`
-}
-
 func GetCertificates(c *gin.Context) {
 	log.Info("GetCertificates called.",
 		zap.String("X-Request-Id", utils.GetReqID(c)))
 
-	var req GetCertificatesRequest
-	if err := c.ShouldBindJSON(&req); err != nil {
-		response.SendBadRequest(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+	aid := c.Query("application_id")
+	if len(aid) == 0 {
+		response.SendInternalServerError(c, errno.ErrRequiredParamsMissing, nil, "缺少application_id")
 		return
 	}
+	applicationId, _ := strconv.Atoi(aid)
 
-	entity := &entity.GetCertificatesEntity{}
-	_ = utils.ConvertEntity(&req, entity)
+	entity := &entity.GetCertificatesEntity{
+		ApplicationId: int64(applicationId),
+	}
 
 	cs := service.NewCertificateService(c)
 	list, err := cs.GetCertificates(entity)
 	if err != nil {
 		//TODO 修改所有的Errbind
-		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 

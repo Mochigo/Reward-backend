@@ -24,7 +24,7 @@ func UploadFile(c *gin.Context) {
 	// file, err := c.FormFile("file")
 	form, err := c.MultipartForm()
 	if err != nil {
-		response.SendBadRequest(c, errno.ErrFileNotFound, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendBadRequest(c, errno.ErrFileNotFound, nil, err.Error())
 		return
 	}
 	resp := UploadFileResponse{make([]string, 0)}
@@ -33,7 +33,7 @@ func UploadFile(c *gin.Context) {
 		filename := filepath.Join(viper.GetString("file_storage"), file.Filename)
 		err := c.SaveUploadedFile(file, filename)
 		if err != nil {
-			response.SendInternalServerError(c, errno.ErrUploadFailed, nil, err.Error(), utils.GetUpFuncInfo(2))
+			response.SendInternalServerError(c, errno.ErrUploadFailed, nil, err.Error())
 			return
 		}
 		resp.Urls = append(resp.Urls, viper.GetString("url")+"/"+filename)

@@ -13,6 +13,7 @@ import (
 	"Reward/handler/login"
 	"Reward/handler/scholarship"
 	"Reward/handler/sd"
+	"Reward/handler/student"
 	"Reward/router/middleware"
 )
 
@@ -68,6 +69,11 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	{
 		applicationRouter.POST("", application.CreateApplication)
 		applicationRouter.GET("/list", application.GetUserApplication)
+	}
+
+	studentRouter := version.Group("/student", middleware.AuthMiddleware())
+	{
+		studentRouter.GET("", student.GetStudentInfo)
 	}
 
 	// upload

@@ -1,8 +1,6 @@
 package login
 
 import (
-	"errors"
-
 	"github.com/gin-gonic/gin"
 	"go.uber.org/zap"
 
@@ -24,30 +22,30 @@ func LoginTeacher(c *gin.Context) {
 
 	var req LoginRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.SendBadRequest(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
 	teacherService := service.NewTeacherService(c)
 	ok, err := teacherService.VerifyTeacher(req.UID, req.Password)
 	if err != nil {
-		response.SendInternalServerError(c, errno.ErrAuthFailed, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrAuthFailed, nil, err.Error())
 		return
 	}
 	if !ok {
-		response.SendInternalServerError(c, errno.ErrAuthFailed, nil, errors.New("没有对应用户").Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrAuthFailed, nil, "没有对应用户")
 		return
 	}
 
 	token, err := teacherService.Sign(req.UID)
 	if err != nil {
-		response.SendInternalServerError(c, errno.ErrTokenGenerate, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrTokenGenerate, nil, err.Error())
 		return
 	}
 
 	role, err := teacherService.GetTeacherRole(req.UID)
 	if err != nil {
-		response.SendInternalServerError(c, errno.ErrGetTeacherRole, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrGetTeacherRole, nil, err.Error())
 		return
 	}
 

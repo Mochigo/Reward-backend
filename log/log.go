@@ -55,8 +55,10 @@ func Init() {
 	development := zap.Development()
 	// 设置初始化字段
 	filed := zap.Fields(zap.String("serviceName", "serviceName"))
+	// 因为我们的代码对zap日志包提供的函数做了一层封装，所以需要在堆栈信息中skip一层
+	skip := zap.AddCallerSkip(1)
 	// 构造日志
-	logger = zap.New(core, caller, development, filed)
+	logger = zap.New(core, caller, skip, development, filed)
 }
 
 func SyncLogger() {

@@ -23,7 +23,7 @@ func CreateApplication(c *gin.Context) {
 
 	var req CreateApplicationRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.SendBadRequest(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
@@ -32,7 +32,7 @@ func CreateApplication(c *gin.Context) {
 
 	applicationService := service.NewApplicationService(c)
 	if err := applicationService.CreateApplication(entity); err != nil {
-		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 

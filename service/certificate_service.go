@@ -47,6 +47,7 @@ func (s *CertificateService) GetCertificates(req *entity.GetCertificatesEntity) 
 	certificates := make([]*entity.CertificateEntity, 0, len(cl))
 	for _, c := range cl {
 		tmp := &entity.CertificateEntity{
+			Id:             c.Id,
 			ApplicationId:  c.ApplicationId,
 			Name:           c.Name,
 			Level:          c.Level,

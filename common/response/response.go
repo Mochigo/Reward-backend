@@ -27,12 +27,11 @@ func SendResponse(c *gin.Context, err error, data interface{}) {
 	})
 }
 
-func sendError(c *gin.Context, status int, err error, data interface{}, cause string, pos string) {
+func sendError(c *gin.Context, status int, err error, data interface{}, cause string) {
 	code, message := errno.DecodeErr(err)
 	log.Info(message,
 		zap.String("X-Request-Id", utils.GetReqID(c)),
 		zap.String("cause", cause),
-		zap.String("pos", pos),
 	)
 
 	c.JSON(status, Response{
@@ -42,22 +41,22 @@ func sendError(c *gin.Context, status int, err error, data interface{}, cause st
 	})
 }
 
-func SendBadRequest(c *gin.Context, err error, data interface{}, cause string, pos string) {
-	sendError(c, http.StatusBadRequest, err, data, cause, pos)
+func SendBadRequest(c *gin.Context, err error, data interface{}, cause string) {
+	sendError(c, http.StatusBadRequest, err, data, cause)
 }
 
-func SendUnauthorized(c *gin.Context, err error, data interface{}, cause string, pos string) {
-	sendError(c, http.StatusUnauthorized, err, data, cause, pos)
+func SendUnauthorized(c *gin.Context, err error, data interface{}, cause string) {
+	sendError(c, http.StatusUnauthorized, err, data, cause)
 }
 
-func SendForbidden(c *gin.Context, err error, data interface{}, cause string, pos string) {
-	sendError(c, http.StatusForbidden, err, data, cause, pos)
+func SendForbidden(c *gin.Context, err error, data interface{}, cause string) {
+	sendError(c, http.StatusForbidden, err, data, cause)
 }
 
-func SendNotFound(c *gin.Context, err error, data interface{}, cause string, pos string) {
-	sendError(c, http.StatusNotFound, err, data, cause, pos)
+func SendNotFound(c *gin.Context, err error, data interface{}, cause string) {
+	sendError(c, http.StatusNotFound, err, data, cause)
 }
 
-func SendInternalServerError(c *gin.Context, err error, data interface{}, cause string, pos string) {
-	sendError(c, http.StatusInternalServerError, err, data, cause, pos)
+func SendInternalServerError(c *gin.Context, err error, data interface{}, cause string) {
+	sendError(c, http.StatusInternalServerError, err, data, cause)
 }

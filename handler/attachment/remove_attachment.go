@@ -22,7 +22,7 @@ func RemoveAttachment(c *gin.Context) {
 
 	var req RemoveAttachmentRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.SendBadRequest(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
@@ -31,7 +31,7 @@ func RemoveAttachment(c *gin.Context) {
 
 	scholarshipService := service.NewScholarshipService(c)
 	if err := scholarshipService.RemoveAttachment(entity); err != nil {
-		response.SendInternalServerError(c, errno.ErrDeleteAttachment, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrDeleteAttachment, nil, err.Error())
 		return
 	}
 

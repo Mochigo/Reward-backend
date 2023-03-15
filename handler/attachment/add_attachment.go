@@ -23,7 +23,7 @@ func AddAttachment(c *gin.Context) {
 
 	var req AddAttachmentRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.SendBadRequest(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
@@ -32,7 +32,7 @@ func AddAttachment(c *gin.Context) {
 
 	scholarshipService := service.NewScholarshipService(c)
 	if err := scholarshipService.AddAttachment(entity); err != nil {
-		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 

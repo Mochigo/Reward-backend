@@ -33,7 +33,7 @@ func GetUserApplication(c *gin.Context) {
 	applicationService := service.NewApplicationService(c)
 	list, total, err := applicationService.GetUserApplication(entity)
 	if err != nil {
-		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 

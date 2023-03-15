@@ -12,6 +12,7 @@ type GetCertificatesEntity struct {
 }
 
 type CertificateEntity struct {
+	Id             int64  `json:"id"`
 	ApplicationId  int64  `json:"application_id"`  // 申请id
 	Name           string `json:"name"`            // 荣誉名称
 	Level          string `json:"level"`           // 荣誉级别, 校级-01|省级-02|国家级|-03

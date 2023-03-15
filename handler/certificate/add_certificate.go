@@ -29,7 +29,7 @@ func AddCertificate(c *gin.Context) {
 
 	var req AddCertificateRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
-		response.SendBadRequest(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
@@ -39,7 +39,7 @@ func AddCertificate(c *gin.Context) {
 	cs := service.NewCertificateService(c)
 	cid, err := cs.AddCertificate(entity)
 	if err != nil {
-		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error(), utils.GetUpFuncInfo(2))
+		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
