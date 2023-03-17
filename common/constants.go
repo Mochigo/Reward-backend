@@ -34,5 +34,15 @@ const (
 )
 
 var (
-	ErrTimeParse = errors.New("fail to parse time")
+	ErrTimeParse       = errors.New("fail to parse time")
+	ErrMismatching     = errors.New("the password does not match the account")
+	ErrInvalidFileType = errors.New("invalid file type")
+)
+
+const (
+	DefaultPassword = "1234"
+)
+
+const (
+	XlsxExt = ".xlsx"
 )

@@ -2,6 +2,7 @@ package model
 
 import (
 	"errors"
+	"fmt"
 	"sync"
 
 	"go.uber.org/zap"
@@ -37,15 +38,15 @@ func GetStudentDao() *StudentDao {
 
 func (*StudentDao) GetStudentByUID(db *gorm.DB, uid string) (*Student, error) {
 	s := &Student{}
-	err := db.Model(&Student{}).Where("uid = ?", uid).Find(s).Error
+	err := db.Model(&Student{}).Where("uid = ?", uid).First(s).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		log.Error("[GetStudentByUID] record not found",
+		log.Warn("[StudentDao][GetStudentByUID] record not found",
 			zap.String("uid", uid))
 		return nil, gorm.ErrRecordNotFound
 	}
 
 	if err != nil {
-		log.Error("[GetStudentByUID] failed to get",
+		log.Error("[StudentDao][GetStudentByUID] failed to get",
 			zap.String("uid", uid),
 			zap.String("err", err.Error()))
 		return nil, err
@@ -56,19 +57,37 @@ func (*StudentDao) GetStudentByUID(db *gorm.DB, uid string) (*Student, error) {
 
 func (*StudentDao) GetStudentById(db *gorm.DB, id int64) (*Student, error) {
 	s := &Student{}
-	err := db.Model(&Student{}).Where("id = ?", id).Find(s).Error
+	err := db.Model(&Student{}).Where("id = ?", id).First(s).Error
 	if errors.Is(err, gorm.ErrRecordNotFound) {
-		log.Error("[GetStudentByUID] record not found",
+		log.Error("[StudentDao][GetStudentByUID] record not found",
 			zap.Int64("id", id))
 		return nil, gorm.ErrRecordNotFound
 	}
 
 	if err != nil {
-		log.Error("[GetStudentByUID] failed to get",
+		log.Error("[StudentDao][GetStudentByUID] failed to get",
 			zap.Int64("id", id),
 			zap.String("err", err.Error()))
 		return nil, err
 	}
 
 	return s, nil
+}
+
+func (*StudentDao) Save(db *gorm.DB, s *Student) error {
+	if err := db.Save(s).Error; err != nil {
+		log.Error("[StudentDao][Save] fail to save",
+			zap.String("student", fmt.Sprintf("%+v", s)))
+		return err
+	}
+	return nil
+}
+
+func (*StudentDao) Create(db *gorm.DB, s *Student) error {
+	if err := db.Model(&Student{}).Create(s).Error; err != nil {
+		log.Error("[StudentDao][Create] fail to create",
+			zap.String("student", fmt.Sprintf("%+v", s)))
+		return err
+	}
+	return nil
 }

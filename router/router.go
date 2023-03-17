@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
 
-	"Reward/handler"
 	"Reward/handler/application"
 	"Reward/handler/attachment"
 	"Reward/handler/certificate"
@@ -14,6 +13,7 @@ import (
 	"Reward/handler/scholarship"
 	"Reward/handler/sd"
 	"Reward/handler/student"
+	"Reward/handler/upload"
 	"Reward/router/middleware"
 )
 
@@ -77,9 +77,10 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	}
 
 	// upload
-	uploadRouter := version.Group("/upload")
+	uploadRouter := version.Group("/upload", middleware.AuthMiddleware())
 	{
-		uploadRouter.POST("", handler.UploadFile)
+		uploadRouter.POST("", upload.UploadFile)
+		uploadRouter.POST("/score", upload.UploadScore)
 	}
 
 	// The health check handlers

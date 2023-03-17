@@ -1,14 +1,19 @@
 package service
 
 import (
-	"Reward/common"
-	"Reward/common/token"
-	"Reward/model"
-	"Reward/service/entity"
+	"errors"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/spf13/viper"
+	"go.uber.org/zap"
+	"gorm.io/gorm"
+
+	"Reward/common"
+	"Reward/common/token"
+	"Reward/log"
+	"Reward/model"
+	"Reward/service/entity"
 )
 
 type StudentService struct {
@@ -33,7 +38,9 @@ func (s *StudentService) VerifyStudent(uid, password string) (bool, error) {
 	}
 
 	if stu.Password != password {
-		return false, err
+		log.Error("[VerifyStudent]the accound does not match the password",
+			zap.String("error", common.ErrMismatching.Error()))
+		return false, common.ErrMismatching
 	}
 
 	return true, nil
@@ -73,4 +80,37 @@ func (s *StudentService) GetStudentInfo(sid int64) (*entity.StudentEntity, error
 		Uid:     stu.Uid,
 		College: college.Name,
 	}, nil
+}
+
+func (s *StudentService) UploadScore(students []*entity.CreateStudentEntity) (*entity.UploadScoreEntity, error) {
+	successfulList := []string{}
+	failedList := []string{}
+	for _, stu := range students {
+		if err := s.SaveStudent(stu); err != nil {
+			failedList = append(failedList, stu.Uid)
+			continue
+		}
+		successfulList = append(successfulList, stu.Uid)
+	}
+
+	return &entity.UploadScoreEntity{
+		SuccessfulList: successfulList,
+		FailedList:     failedList,
+	}, nil
+}
+
+func (s *StudentService) SaveStudent(entity *entity.CreateStudentEntity) error {
+	stu, err := s.studentDao.GetStudentByUID(model.DB.Self, entity.Uid)
+	// 记录不存在的情况
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		return s.studentDao.Create(model.DB.Self, &model.Student{
+			Score:     entity.Score,
+			Uid:       entity.Uid,
+			Password:  entity.Password,
+			CollegeId: int64(entity.CollegeId),
+		})
+	}
+
+	stu.Score = entity.Score
+	return s.studentDao.Save(model.DB.Self, stu)
 }

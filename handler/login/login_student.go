@@ -37,7 +37,7 @@ func LoginStudent(c *gin.Context) {
 		return
 	}
 	if !ok {
-		response.SendInternalServerError(c, errno.ErrAuthFailed, nil, "没有对应用户")
+		response.SendInternalServerError(c, errno.ErrAuthFailed, nil, "账户不存在或者用户名密码错误")
 		return
 	}
 
