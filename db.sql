@@ -11,6 +11,7 @@ CREATE TABLE
         `scholarship_id` BIGINT NOT NUll COMMENT '奖学金id',
         `student_id` BIGINT NOT NULL COMMENT '申请学生id',
         `status` VARCHAR(25) NOT NUll DEFAULT 'PROCESS' COMMENT '申请状态，APPROVE-通过|PROCESS-处理中|FAILURE-驳回',
+        `deadline` DATETIME NOT NULL COMMENT '截止时间',
         PRIMARY KEY(`id`),
         UNIQUE KEY `uniq_idx_stu_scholarship` (
             `student_id`,
@@ -19,18 +20,17 @@ CREATE TABLE
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT '申请表';
 
 CREATE TABLE
-    `certificate` (
-        `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT '荣誉id',
+    `declaration` (
+        `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
         `application_id` BIGINT NOT NULL COMMENT '申请id',
-        -- `student_id` BIGINT NOT NULL COMMENT '所属学生id', 
-        `name` VARCHAR(255) NOT NULL COMMENT '荣誉名称',
-        `level` CHAR(2) NOT NUll COMMENT '荣誉级别, 校级-01|省级-02|国家级|-03',
+        `name` VARCHAR(255) NOT NULL COMMENT '申报项名称',
+        `level` CHAR(2) NOT NUll COMMENT '申报项级别, 校级-01|省级-02|国家级|-03|扣分项-04',
         `status` VARCHAR(25) NOT NUll DEFAULT 'PROCESS' COMMENT '申请状态，APPROVED-通过|PROCESS-待处理|REJECTED-驳回',
         `rejected_reason` VARCHAR(255) COMMENT '驳回理由',
         `url` VARCHAR(2048) NOT NULL COMMENT '证明文件连接',
         PRIMARY KEY(`id`),
         KEY `idx_application_id` (`application_id`)
-    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT '荣誉表';
+    ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT '申报表';
 
 CREATE TABLE
     `scholarship` (
@@ -89,6 +89,25 @@ CREATE TABLE
         PRIMARY KEY(`id`),
         UNIQUE KEY `uniq_idx_uid` (`uid`)
     ) ENGINE = InnoDB DEFAULT CHARSET = utf8mb4 COMMENT '教师表';
+
+INSERT INTO
+    `teacher` (
+        `uid`,
+        `password`,
+        `college_id`,
+        `role`
+    )
+VALUES (
+        '201921001',
+        '1234',
+        1,
+        "SECRETARY"
+    ), (
+        '201921002',
+        '1234',
+        1,
+        "TEACHER"
+    );
 
 CREATE TABLE
     `teacher_student_relationship` (

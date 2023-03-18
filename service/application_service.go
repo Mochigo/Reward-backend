@@ -2,6 +2,7 @@ package service
 
 import (
 	"Reward/common"
+	"Reward/common/utils"
 	"Reward/model"
 	"Reward/service/entity"
 
@@ -23,11 +24,17 @@ func NewApplicationService(ctx *gin.Context) *ApplicationService {
 }
 
 func (s *ApplicationService) CreateApplication(req *entity.CreateApplicationEntity) error {
+	deadline, err := utils.GetDateTime(req.Deadline)
+	if err != nil {
+		return common.ErrTimeParse
+	}
+
 	return s.applicationDao.Create(model.DB.Self, &model.Application{
 		ScholarshipItemId: req.ScholarshipItemId,
 		ScholarshipId:     req.ScholarshipId,
 		StudentId:         int64(s.Ctx.GetInt(common.TokenUserID)),
 		Status:            common.StatusPROCESS,
+		Deadline:          deadline,
 	})
 }
 

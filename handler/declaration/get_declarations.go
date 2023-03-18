@@ -1,4 +1,4 @@
-package certificate
+package declaration
 
 import (
 	"strconv"
@@ -14,8 +14,8 @@ import (
 	"Reward/service/entity"
 )
 
-func GetCertificates(c *gin.Context) {
-	log.Info("GetCertificates called.",
+func GetDeclarations(c *gin.Context) {
+	log.Info("GetDeclarations called.",
 		zap.String("X-Request-Id", utils.GetReqID(c)))
 
 	aid := c.Query("application_id")
@@ -25,12 +25,12 @@ func GetCertificates(c *gin.Context) {
 	}
 	applicationId, _ := strconv.Atoi(aid)
 
-	entity := &entity.GetCertificatesEntity{
+	entity := &entity.GetDeclarationsEntity{
 		ApplicationId: int64(applicationId),
 	}
 
-	cs := service.NewCertificateService(c)
-	list, err := cs.GetCertificates(entity)
+	service := service.NewDeclarationService(c)
+	list, err := service.GetDeclarations(entity)
 	if err != nil {
 		//TODO 修改所有的Errbind
 		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error())

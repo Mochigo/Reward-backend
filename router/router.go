@@ -8,7 +8,7 @@ import (
 
 	"Reward/handler/application"
 	"Reward/handler/attachment"
-	"Reward/handler/certificate"
+	"Reward/handler/declaration"
 	"Reward/handler/login"
 	"Reward/handler/scholarship"
 	"Reward/handler/sd"
@@ -41,13 +41,13 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		loginRouter.POST("/teacher", login.LoginTeacher)
 	}
 
-	// certificate
-	certificateRouter := version.Group("/certificate")
+	// declaration
+	declarationRouter := version.Group("/declaration")
 	{
-		certificateRouter.POST("", certificate.AddCertificate)
-		certificateRouter.GET("/list", certificate.GetCertificates)
-		certificateRouter.PUT("/audit", certificate.AuditCertificate)
-		certificateRouter.DELETE("", certificate.RemoveCertificate)
+		declarationRouter.POST("", declaration.AddDeclaration)
+		declarationRouter.GET("/list", declaration.GetDeclarations)
+		declarationRouter.PUT("/audit", declaration.AuditDeclaration)
+		declarationRouter.DELETE("", declaration.RemoveDeclaration)
 	}
 
 	// scholarship

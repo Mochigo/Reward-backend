@@ -1,4 +1,4 @@
-package certificate
+package declaration
 
 import (
 	"github.com/gin-gonic/gin"
@@ -12,27 +12,28 @@ import (
 	"Reward/service/entity"
 )
 
-type AuditCertificateRequest struct {
-	CertificateId  int64  `json:"certificate_id"`
-	RejectedReason string `json:"rejected_reason"` // 驳回理由
-	Operation      string `json:"operation"`
+type AddDeclarationRequest struct {
+	Name          string `json:"name"`
+	Level         string `json:"level"`
+	Url           string `json:"url"`
+	ApplicationId int64  `json:"application_id"`
 }
 
-func AuditCertificate(c *gin.Context) {
-	log.Info("AuditCertificate called.",
+func AddDeclaration(c *gin.Context) {
+	log.Info("AddDeclaration called.",
 		zap.String("X-Request-Id", utils.GetReqID(c)))
 
-	var req AuditCertificateRequest
+	var req AddDeclarationRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		response.SendBadRequest(c, errno.ErrBind, nil, err.Error())
 		return
 	}
 
-	entity := &entity.AuditCertificateEntity{}
+	entity := &entity.AddDeclarationEntity{}
 	_ = utils.ConvertEntity(&req, entity)
 
-	cs := service.NewCertificateService(c)
-	if err := cs.AuditCertificate(entity); err != nil {
+	service := service.NewDeclarationService(c)
+	if err := service.AddDeclaration(entity); err != nil {
 		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error())
 		return
 	}

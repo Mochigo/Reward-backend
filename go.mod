@@ -16,7 +16,7 @@ require (
 	github.com/spf13/viper v1.15.0
 	github.com/tklauser/go-sysconf v0.3.11 // indirect
 	github.com/willf/pad v0.0.0-20200313202418-172aa767f2a4
-	github.com/xuri/excelize/v2 v2.7.0 // indirect
+	github.com/xuri/excelize/v2 v2.7.0
 	github.com/yusufpapurcu/wmi v1.2.2 // indirect
 	go.uber.org/zap v1.24.0
 	gopkg.in/natefinch/lumberjack.v2 v2.2.1

@@ -13,8 +13,9 @@ import (
 )
 
 type CreateApplicationRequest struct {
-	ScholarshipItemId int64 `json:"scholarship_item_id"` // 奖学金子项id
-	ScholarshipId     int64 `json:"scholarship_id"`      // 奖学金id
+	ScholarshipItemId int64  `json:"scholarship_item_id"` // 奖学金子项id
+	ScholarshipId     int64  `json:"scholarship_id"`      // 奖学金id
+	Deadline          string `json:"deadline"`
 }
 
 func CreateApplication(c *gin.Context) {

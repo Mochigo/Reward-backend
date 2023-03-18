@@ -1,18 +1,24 @@
 package model
 
 import (
-	"Reward/common"
+	"fmt"
 	"sync"
+	"time"
 
+	"go.uber.org/zap"
 	"gorm.io/gorm"
+
+	"Reward/common"
+	"Reward/log"
 )
 
 type Application struct {
-	Id                int64  `gorm:"column:id;primary_key;AUTO_INCREMENT"`   // 申请id
-	ScholarshipItemId int64  `gorm:"column:scholarship_item_id;NOT NULL"`    // 奖学金子项id
-	ScholarshipId     int64  `gorm:"column:scholarship_id;NOT NULL"`         // 奖学金id
-	StudentId         int64  `gorm:"column:student_id;NOT NULL"`             // 申请学生id
-	Status            string `gorm:"column:status;default:PROCESS;NOT NULL"` // 申请状态，APPROVE-通过|PROCESS-处理中|FAILURE-驳回
+	Id                int64     `gorm:"column:id"`                       // 申请id
+	ScholarshipItemId int64     `gorm:"column:scholarship_item_id"`      // 奖学金子项id
+	ScholarshipId     int64     `gorm:"column:scholarship_id"`           // 奖学金id
+	StudentId         int64     `gorm:"column:student_id"`               // 申请学生id
+	Status            string    `gorm:"column:status"`                   // 申请状态，APPROVE-通过|PROCESS-处理中|FAILURE-驳回
+	Deadline          time.Time `gorm:"column:deadline" json:"deadline"` // 截止时间
 }
 
 func (m *Application) TableName() string {
@@ -32,7 +38,13 @@ func GetApplicationDao() *ApplicationDao {
 }
 
 func (*ApplicationDao) Create(db *gorm.DB, a *Application) error {
-	return db.Model(&Application{}).Create(a).Error
+	if err := db.Model(&Application{}).Create(a).Error; err != nil {
+		log.Error("[ApplicationDao][Create] fail to create",
+			zap.String("err", err.Error()),
+			zap.String("value", fmt.Sprintf("%+v", *a)))
+		return err
+	}
+	return nil
 }
 
 func (*ApplicationDao) GetList(db *gorm.DB, condi map[string]interface{}) ([]*Application, error) {
