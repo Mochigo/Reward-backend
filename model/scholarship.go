@@ -2,9 +2,12 @@ package model
 
 import (
 	"Reward/common"
+	"Reward/log"
+	"errors"
 	"sync"
 	"time"
 
+	"go.uber.org/zap"
 	"gorm.io/gorm"
 )
 
@@ -66,4 +69,23 @@ func (*ScholarshipDao) GetCountByCollegeId(db *gorm.DB, collegeId int) (int64, e
 		return 0, err
 	}
 	return total, nil
+}
+
+func (*ScholarshipDao) GetScholarshipById(db *gorm.DB, id int64) (*Scholarship, error) {
+	s := &Scholarship{}
+	err := db.Model(&Scholarship{}).Where("id = ?", id).First(s).Error
+	if errors.Is(err, gorm.ErrRecordNotFound) {
+		log.Error("[ScholarshipDao][GetScholarshipById] record not found",
+			zap.Int64("id", id))
+		return nil, gorm.ErrRecordNotFound
+	}
+
+	if err != nil {
+		log.Error("[ScholarshipDao][GetScholarshipById] failed to get",
+			zap.Int64("id", id),
+			zap.String("err", err.Error()))
+		return nil, err
+	}
+
+	return s, nil
 }

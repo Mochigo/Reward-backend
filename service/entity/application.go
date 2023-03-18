@@ -18,4 +18,5 @@ type ApplicationEntity struct {
 	ScholarshipId       int64  `json:"scholarship_id"`        // 奖学金id
 	StudentId           int64  `json:"student_id"`            // 申请学生id
 	Status              string `json:"status"`                // 申请状态，APPROVE-通过|PROCESS-处理中|FAILURE-驳回
+	Deadline            string `json:"deadline"`              //过期时间
 }

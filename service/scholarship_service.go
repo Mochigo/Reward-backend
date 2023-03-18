@@ -76,6 +76,21 @@ func (s *ScholarshipService) CreateScholarship(req *entity.CreateScholarshipEnti
 	})
 }
 
+func (s *ScholarshipService) GetScholarshipInfo(req *entity.GetScholarshipInfoEntity) (*entity.ScholarshipEntity, error) {
+	scholarship, err := s.scholarshipDao.GetScholarshipById(model.DB.Self, req.ScholarshipId)
+	if err != nil {
+		return nil, err
+	}
+
+	return &entity.ScholarshipEntity{
+		Id:        scholarship.Id,
+		Name:      scholarship.Name,
+		CollegeId: scholarship.CollegeId,
+		StartTime: scholarship.StartTime.Format(utils.LayoutDateTime),
+		EndTime:   scholarship.EndTime.Format(utils.LayoutDateTime),
+	}, nil
+}
+
 func (s *ScholarshipService) GetScholarships(req *entity.GetScholarshipsEntity) ([]*entity.ScholarshipEntity, int64, error) {
 	condi := make(map[string]interface{})
 	condi[common.CondiPage] = req.Page

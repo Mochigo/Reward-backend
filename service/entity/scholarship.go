@@ -39,6 +39,10 @@ type GetScholarshipsEntity struct {
 	Limit int `json:"limit"`
 }
 
+type GetScholarshipInfoEntity struct {
+	ScholarshipId int64 `json:"scholarship_id"`
+}
+
 // scholarshipItem
 type AddScholarshipItemEntity struct {
 	ScholarshipId int64  `json:"scholarship_id"`

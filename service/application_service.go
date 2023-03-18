@@ -3,10 +3,12 @@ package service
 import (
 	"Reward/common"
 	"Reward/common/utils"
+	"Reward/log"
 	"Reward/model"
 	"Reward/service/entity"
 
 	"github.com/gin-gonic/gin"
+	"go.uber.org/zap"
 )
 
 type ApplicationService struct {
@@ -26,6 +28,8 @@ func NewApplicationService(ctx *gin.Context) *ApplicationService {
 func (s *ApplicationService) CreateApplication(req *entity.CreateApplicationEntity) error {
 	deadline, err := utils.GetDateTime(req.Deadline)
 	if err != nil {
+		log.Error("[CreateApplication] fail to parse time",
+			zap.String("time", req.Deadline))
 		return common.ErrTimeParse
 	}
 
@@ -74,6 +78,7 @@ func (s *ApplicationService) GetUserApplication(req *entity.GetUserApplicationEn
 			ScholarshipId:       a.ScholarshipId,
 			StudentId:           a.StudentId,
 			Status:              a.Status,
+			Deadline:            a.Deadline.Format(utils.LayoutDateTime),
 		}
 		applications = append(applications, tmp)
 	}

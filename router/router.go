@@ -58,6 +58,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 		scholarshipRouter.GET("/attachments", attachment.GetAttachments)
 
 		scholarshipRouter.POST("", scholarship.CreateScholarship)
+		scholarshipRouter.GET("", scholarship.GetScholarshipInfo)
 		scholarshipRouter.GET("/list", scholarship.GetScholarships)
 
 		scholarshipRouter.POST("/item", scholarship.AddScholarshipItem)
