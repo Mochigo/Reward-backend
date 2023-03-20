@@ -23,6 +23,7 @@ CREATE TABLE
     `declaration` (
         `id` BIGINT NOT NULL AUTO_INCREMENT COMMENT 'id',
         `application_id` BIGINT NOT NULL COMMENT '申请id',
+        `student_id` BIGINT NOT NULL COMMENT '所有者id',
         `name` VARCHAR(255) NOT NULL COMMENT '申报项名称',
         `level` CHAR(2) NOT NUll COMMENT '申报项级别, 校级-01|省级-02|国家级|-03|扣分项-04',
         `status` VARCHAR(25) NOT NUll DEFAULT 'PROCESS' COMMENT '申请状态，APPROVED-通过|PROCESS-待处理|REJECTED-驳回',

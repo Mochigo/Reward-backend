@@ -25,6 +25,7 @@ func NewDeclarationService(ctx *gin.Context) *DeclarationService {
 func (s *DeclarationService) AddDeclaration(req *entity.AddDeclarationEntity) error {
 	return s.declarationDao.Create(model.DB.Self, &model.Declaration{
 		ApplicationId: req.ApplicationId,
+		StudentId:     int64(s.ctx.GetInt(common.TokenUserID)),
 		Name:          req.Name,
 		Level:         req.Level,
 		Status:        common.StatusPROCESS,
@@ -44,6 +45,7 @@ func (s *DeclarationService) GetDeclarations(req *entity.GetDeclarationsEntity) 
 		tmp := &entity.DeclarationEntity{
 			Id:             c.Id,
 			ApplicationId:  c.ApplicationId,
+			StudentId:      c.StudentId,
 			Name:           c.Name,
 			Level:          c.Level,
 			Status:         c.Status,

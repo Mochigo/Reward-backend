@@ -14,6 +14,7 @@ type GetDeclarationsEntity struct {
 type DeclarationEntity struct {
 	Id             int64  `json:"id"`
 	ApplicationId  int64  `json:"application_id"`
+	StudentId      int64  `json:"student_id"`
 	Name           string `json:"name"`
 	Level          string `json:"level"`
 	Status         string `json:"status"`

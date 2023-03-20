@@ -15,6 +15,7 @@ import (
 type Declaration struct {
 	Id             int64  `gorm:"column:id" json:"id"`
 	ApplicationId  int64  `gorm:"column:application_id" json:"application_id"`
+	StudentId      int64  `gorm:"column:student_id" json:"student_id"`
 	Name           string `gorm:"column:name" json:"name"`
 	Level          string `gorm:"column:level" json:"level"`
 	Status         string `gorm:"column:status" json:"status"`
@@ -85,4 +86,38 @@ func (*DeclarationDao) GetDeclarationsByApplicationIdAndStatus(db *gorm.DB, appl
 	}
 
 	return dl, nil
+}
+
+func (*DeclarationDao) GetDeclarationsByStudentIdsAndStatus(db *gorm.DB, stuIds []int64, status string, page int, limit int) ([]*Declaration, error) {
+	db = db.Model(&Declaration{})
+	if status != common.StringEmpty {
+		db = db.Where("status = ?", status)
+	}
+
+	dl := make([]*Declaration, 0)
+	if err := db.Where("student_id in ?", stuIds).Offset((page - 1) * limit).Limit(limit).Find(&dl).Error; err != nil {
+		log.Error("[DeclarationDao][GetDeclarationsByStudentIdAndStatus] fail to get",
+			zap.String("err", err.Error()),
+			zap.String("stuIds", fmt.Sprintf("%+v", stuIds)),
+			zap.String("status", status),
+		)
+		return nil, err
+	}
+
+	return dl, nil
+}
+
+func (*DeclarationDao) GetCountByStudentIdAndStatus(db *gorm.DB, stuIds []int64, status string) (int64, error) {
+	var total int64
+
+	db = db.Model(&Declaration{})
+	if status != common.StringEmpty {
+		db = db.Where("status = ?", status)
+	}
+
+	if err := db.Where("student_id in ?", stuIds).Count(&total).Error; err != nil {
+		return 0, err
+	}
+
+	return total, nil
 }

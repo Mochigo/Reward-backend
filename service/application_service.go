@@ -15,6 +15,7 @@ type ApplicationService struct {
 	Ctx                *gin.Context
 	applicationDao     *model.ApplicationDao
 	scholarshipItemDao *model.ScholarshipItemDao
+	scholarshipDao     *model.ScholarshipDao
 }
 
 func NewApplicationService(ctx *gin.Context) *ApplicationService {
@@ -22,6 +23,7 @@ func NewApplicationService(ctx *gin.Context) *ApplicationService {
 		Ctx:                ctx,
 		applicationDao:     model.GetApplicationDao(),
 		scholarshipItemDao: model.GetScholarshipItemDao(),
+		scholarshipDao:     model.GetScholarshipDao(),
 	}
 }
 
@@ -47,28 +49,52 @@ func (s *ApplicationService) GetUserApplication(req *entity.GetUserApplicationEn
 	condi[common.CondiPage] = req.Page
 	condi[common.CondiLimit] = req.Limit
 	condi[common.CondiStudentId] = s.Ctx.GetInt(common.TokenUserID)
-
+	// 查询申请
 	al, err := s.applicationDao.GetList(model.DB.Self, condi)
 	if err != nil {
 		return nil, 0, err
 	}
 
+	scholarship := make(map[int64]*model.Scholarship)
+	scholarshipIds := make([]int64, 0, len(al))
+
+	scholarshipItem := make(map[int64]*model.ScholarshipItem)
 	scholarshipItemIds := make([]int64, 0, len(al))
+
 	for _, a := range al {
 		scholarshipItemIds = append(scholarshipItemIds, a.ScholarshipItemId)
+		if _, ok := scholarship[a.ScholarshipId]; !ok {
+			scholarshipIds = append(scholarshipIds, a.ScholarshipId)
+			scholarship[a.ScholarshipId] = &model.Scholarship{}
+		}
 	}
+
 	scholarshipItems, err := s.scholarshipItemDao.BatchGetByIds(model.DB.Self, scholarshipItemIds)
 	if err != nil {
 		return nil, 0, err
 	}
-	scholarshipItem := make(map[int64]*model.ScholarshipItem)
 	for _, item := range scholarshipItems {
 		scholarshipItem[item.Id] = item
 	}
 
+	scholarships, err := s.scholarshipDao.BatchGetByIds(model.DB.Self, scholarshipIds)
+	if err != nil {
+		return nil, 0, err
+	}
+	for _, s := range scholarships {
+		scholarship[s.Id].Name = s.Name
+		scholarship[s.Id].CollegeId = s.CollegeId
+		scholarship[s.Id].EndTime = s.EndTime
+		scholarship[s.Id].StartTime = s.StartTime
+	}
+
+	// 返回拼接申请内容
 	applications := make([]*entity.ApplicationEntity, 0, len(al))
 	for _, a := range al {
 		if _, ok := scholarshipItem[a.ScholarshipItemId]; !ok {
+			continue
+		}
+		if _, ok := scholarship[a.ScholarshipId]; !ok {
 			continue
 		}
 		tmp := &entity.ApplicationEntity{
@@ -76,6 +102,7 @@ func (s *ApplicationService) GetUserApplication(req *entity.GetUserApplicationEn
 			ScholarshipItemId:   a.ScholarshipItemId,
 			ScholarshipItemName: scholarshipItem[a.ScholarshipItemId].Name,
 			ScholarshipId:       a.ScholarshipId,
+			ScholarshipName:     scholarship[a.ScholarshipId].Name,
 			StudentId:           a.StudentId,
 			Status:              a.Status,
 			Deadline:            a.Deadline.Format(utils.LayoutDateTime),

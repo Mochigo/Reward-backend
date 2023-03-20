@@ -13,6 +13,7 @@ import (
 	"Reward/handler/scholarship"
 	"Reward/handler/sd"
 	"Reward/handler/student"
+	"Reward/handler/teacher"
 	"Reward/handler/upload"
 	"Reward/router/middleware"
 )
@@ -42,7 +43,7 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	}
 
 	// declaration
-	declarationRouter := version.Group("/declaration")
+	declarationRouter := version.Group("/declaration", middleware.AuthMiddleware())
 	{
 		declarationRouter.POST("", declaration.AddDeclaration)
 		declarationRouter.GET("/list", declaration.GetDeclarations)
@@ -75,6 +76,11 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	studentRouter := version.Group("/student", middleware.AuthMiddleware())
 	{
 		studentRouter.GET("", student.GetStudentInfo)
+	}
+
+	teacherRouter := version.Group("/teacher", middleware.AuthMiddleware())
+	{
+		teacherRouter.GET("/declarations", teacher.GetStudentsDeclarations)
 	}
 
 	// upload

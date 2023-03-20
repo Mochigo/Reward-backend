@@ -52,7 +52,7 @@ func (*ApplicationDao) GetList(db *gorm.DB, condi map[string]interface{}) ([]*Ap
 	limit := condi[common.CondiLimit].(int)
 	page := condi[common.CondiPage].(int)
 	studentId := condi[common.CondiStudentId].(int)
-	if err := db.Where("student_id = ?", studentId).Offset((page - 1) * limit).Limit(limit).Find(&applications).Error; err != nil {
+	if err := db.Where("student_id = ?", studentId).Offset((page - 1) * limit).Limit(limit).Order("deadline DESC").Find(&applications).Error; err != nil {
 		return nil, err
 	}
 

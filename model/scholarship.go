@@ -4,6 +4,7 @@ import (
 	"Reward/common"
 	"Reward/log"
 	"errors"
+	"fmt"
 	"sync"
 	"time"
 
@@ -88,4 +89,15 @@ func (*ScholarshipDao) GetScholarshipById(db *gorm.DB, id int64) (*Scholarship, 
 	}
 
 	return s, nil
+}
+
+func (*ScholarshipDao) BatchGetByIds(db *gorm.DB, Ids []int64) ([]*Scholarship, error) {
+	scholarships := make([]*Scholarship, 0)
+	if err := db.Model(&Scholarship{}).Where("id IN ?", Ids).Find(&scholarships).Error; err != nil {
+		log.Error("[ScholarshipDao][BatchGetByIds] fail to get",
+			zap.String("ids", fmt.Sprintf("%+v", Ids)),
+			zap.String("err", err.Error()))
+		return nil, err
+	}
+	return scholarships, nil
 }
