@@ -70,12 +70,14 @@ func Load(g *gin.Engine, mw ...gin.HandlerFunc) *gin.Engine {
 	applicationRouter := version.Group("/application", middleware.AuthMiddleware())
 	{
 		applicationRouter.POST("", application.CreateApplication)
-		applicationRouter.GET("/list", application.GetUserApplication)
+		applicationRouter.GET("/list", application.GetItemApplications)
+		applicationRouter.POST("/audit", application.AuditApplication)
 	}
 
 	studentRouter := version.Group("/student", middleware.AuthMiddleware())
 	{
 		studentRouter.GET("", student.GetStudentInfo)
+		applicationRouter.GET("/applications", student.GetUserApplication)
 	}
 
 	teacherRouter := version.Group("/teacher", middleware.AuthMiddleware())

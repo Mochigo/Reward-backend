@@ -18,3 +18,8 @@ type UploadScoreEntity struct {
 	SuccessfulList []string `json:"successful_list"`
 	FailedList     []string `json:"failed_list"`
 }
+
+type GetUserApplicationEntity struct {
+	Page  int `json:"page"`
+	Limit int `json:"limit"`
+}

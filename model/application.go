@@ -62,6 +62,19 @@ func (*ApplicationDao) GetList(db *gorm.DB, condi map[string]interface{}) ([]*Ap
 func (*ApplicationDao) GetCountByStudentId(db *gorm.DB, studentId int) (int64, error) {
 	var total int64
 	if err := db.Model(&Application{}).Where("student_id = ?", studentId).Count(&total).Error; err != nil {
+		log.Error("[ApplicationDao][GetCountByStudentId] fail to get count",
+			zap.Int("student_id", studentId))
+		return 0, err
+	}
+
+	return total, nil
+}
+
+func (*ApplicationDao) GetCountByScholarshipItemId(db *gorm.DB, scholarshipItemId int64) (int64, error) {
+	var total int64
+	if err := db.Model(&Application{}).Where("scholarship_item_id = ?", scholarshipItemId).Count(&total).Error; err != nil {
+		log.Error("[ApplicationDao][GetCountByScholarshipItemId] fail to get count",
+			zap.Int64("scholarship_item_id", scholarshipItemId))
 		return 0, err
 	}
 
@@ -70,4 +83,24 @@ func (*ApplicationDao) GetCountByStudentId(db *gorm.DB, studentId int) (int64, e
 
 func (*ApplicationDao) DeleteByScholarshipItemId(db *gorm.DB, scholarshipItemId int) error {
 	return db.Where("scholarship_item_id = ?", scholarshipItemId).Delete(&Application{}).Error
+}
+
+func (*ApplicationDao) GetListByScholarshipItemId(db *gorm.DB, scholarshipItemId int64, page, limit int) ([]*Application, error) {
+	applications := make([]*Application, 0)
+	if err := db.Where("scholarship_item_id = ?", scholarshipItemId).Offset((page - 1) * limit).Limit(limit).Find(&applications).Error; err != nil {
+		log.Error("[ApplicationDao][GetListByScholarshipItemId] fail to get",
+			zap.Int64("scholarship_item_id", scholarshipItemId))
+		return nil, err
+	}
+	return applications, nil
+}
+
+func (*ApplicationDao) Update(db *gorm.DB, id int64, updates map[string]interface{}) error {
+	if err := db.Table("application").Where("id = ?", id).Updates(updates).Error; err != nil {
+		log.Error("[ApplicationDao][Update] fail to update",
+			zap.String("err", err.Error()),
+			zap.String("updates", fmt.Sprintf("%+v", updates)))
+		return err
+	}
+	return nil
 }

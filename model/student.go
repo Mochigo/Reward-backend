@@ -55,6 +55,17 @@ func (*StudentDao) GetStudentByUID(db *gorm.DB, uid string) (*Student, error) {
 	return s, nil
 }
 
+func (*StudentDao) BatchGetByIds(db *gorm.DB, Ids []int64) ([]*Student, error) {
+	students := make([]*Student, 0)
+	if err := db.Model(&Student{}).Where("id IN ?", Ids).Find(&students).Error; err != nil {
+		log.Error("[StudentDao][BatchGetByIds] fail to get",
+			zap.String("ids", fmt.Sprintf("%+v", Ids)),
+			zap.String("err", err.Error()))
+		return nil, err
+	}
+	return students, nil
+}
+
 func (*StudentDao) GetStudentById(db *gorm.DB, id int64) (*Student, error) {
 	s := &Student{}
 	err := db.Model(&Student{}).Where("id = ?", id).First(s).Error

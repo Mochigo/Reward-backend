@@ -12,18 +12,16 @@ import (
 )
 
 type ApplicationService struct {
-	Ctx                *gin.Context
-	applicationDao     *model.ApplicationDao
-	scholarshipItemDao *model.ScholarshipItemDao
-	scholarshipDao     *model.ScholarshipDao
+	Ctx            *gin.Context
+	applicationDao *model.ApplicationDao
+	studentDao     *model.StudentDao
 }
 
 func NewApplicationService(ctx *gin.Context) *ApplicationService {
 	return &ApplicationService{
-		Ctx:                ctx,
-		applicationDao:     model.GetApplicationDao(),
-		scholarshipItemDao: model.GetScholarshipItemDao(),
-		scholarshipDao:     model.GetScholarshipDao(),
+		Ctx:            ctx,
+		applicationDao: model.GetApplicationDao(),
+		studentDao:     model.GetStudentDao(),
 	}
 }
 
@@ -44,76 +42,55 @@ func (s *ApplicationService) CreateApplication(req *entity.CreateApplicationEnti
 	})
 }
 
-func (s *ApplicationService) GetUserApplication(req *entity.GetUserApplicationEntity) ([]*entity.ApplicationEntity, int64, error) {
-	condi := make(map[string]interface{})
-	condi[common.CondiPage] = req.Page
-	condi[common.CondiLimit] = req.Limit
-	condi[common.CondiStudentId] = s.Ctx.GetInt(common.TokenUserID)
-	// 查询申请
-	al, err := s.applicationDao.GetList(model.DB.Self, condi)
+func (s *ApplicationService) GetItemApplications(req *entity.GetItemApplicationsEntity) ([]*entity.ItemApplicationEntity, int64, error) {
+	al, err := s.applicationDao.GetListByScholarshipItemId(model.DB.Self, req.ScholarshipItemId, req.Page, req.Limit)
 	if err != nil {
 		return nil, 0, err
 	}
 
-	scholarship := make(map[int64]*model.Scholarship)
-	scholarshipIds := make([]int64, 0, len(al))
-
-	scholarshipItem := make(map[int64]*model.ScholarshipItem)
-	scholarshipItemIds := make([]int64, 0, len(al))
-
+	stuIds := make([]int64, 0, len(al))
 	for _, a := range al {
-		scholarshipItemIds = append(scholarshipItemIds, a.ScholarshipItemId)
-		if _, ok := scholarship[a.ScholarshipId]; !ok {
-			scholarshipIds = append(scholarshipIds, a.ScholarshipId)
-			scholarship[a.ScholarshipId] = &model.Scholarship{}
-		}
+		stuIds = append(stuIds, a.StudentId)
 	}
 
-	scholarshipItems, err := s.scholarshipItemDao.BatchGetByIds(model.DB.Self, scholarshipItemIds)
+	students, err := s.studentDao.BatchGetByIds(model.DB.Self, stuIds)
 	if err != nil {
 		return nil, 0, err
 	}
-	for _, item := range scholarshipItems {
-		scholarshipItem[item.Id] = item
-	}
-
-	scholarships, err := s.scholarshipDao.BatchGetByIds(model.DB.Self, scholarshipIds)
-	if err != nil {
-		return nil, 0, err
-	}
-	for _, s := range scholarships {
-		scholarship[s.Id].Name = s.Name
-		scholarship[s.Id].CollegeId = s.CollegeId
-		scholarship[s.Id].EndTime = s.EndTime
-		scholarship[s.Id].StartTime = s.StartTime
+	student := make(map[int64]*model.Student)
+	for _, s := range students {
+		student[s.Id] = s
 	}
 
 	// 返回拼接申请内容
-	applications := make([]*entity.ApplicationEntity, 0, len(al))
+	applications := make([]*entity.ItemApplicationEntity, 0, len(al))
 	for _, a := range al {
-		if _, ok := scholarshipItem[a.ScholarshipItemId]; !ok {
+		if _, exist := student[a.StudentId]; !exist {
 			continue
 		}
-		if _, ok := scholarship[a.ScholarshipId]; !ok {
-			continue
-		}
-		tmp := &entity.ApplicationEntity{
-			Id:                  a.Id,
-			ScholarshipItemId:   a.ScholarshipItemId,
-			ScholarshipItemName: scholarshipItem[a.ScholarshipItemId].Name,
-			ScholarshipId:       a.ScholarshipId,
-			ScholarshipName:     scholarship[a.ScholarshipId].Name,
-			StudentId:           a.StudentId,
-			Status:              a.Status,
-			Deadline:            a.Deadline.Format(utils.LayoutDateTime),
+		tmp := &entity.ItemApplicationEntity{
+			Id:                a.Id,
+			ScholarshipItemId: a.ScholarshipItemId,
+			ScholarshipId:     a.ScholarshipId,
+			StudentId:         a.StudentId,
+			Uid:               student[a.StudentId].Uid,
+			Status:            a.Status,
+			Deadline:          a.Deadline.Format(utils.LayoutDateTime),
 		}
 		applications = append(applications, tmp)
 	}
 
-	total, err := s.applicationDao.GetCountByStudentId(model.DB.Self, s.Ctx.GetInt(common.TokenUserID))
+	total, err := s.applicationDao.GetCountByScholarshipItemId(model.DB.Self, req.ScholarshipItemId)
 	if err != nil {
 		return nil, 0, err
 	}
 
 	return applications, total, nil
+}
+
+func (s *ApplicationService) AuditApplication(req *entity.AuditApplicationEntity) error {
+	updateMaps := make(map[string]interface{})
+	updateMaps["status"] = common.StatusAPPROVE
+
+	return s.applicationDao.Update(model.DB.Self, req.ApplicationId, updateMaps)
 }

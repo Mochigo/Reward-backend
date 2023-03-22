@@ -67,7 +67,7 @@ func (*DeclarationDao) Update(db *gorm.DB, id int64, updates map[string]interfac
 			zap.String("updates", fmt.Sprintf("%+v", updates)))
 		return err
 	}
-	return db.Table("declaration").Where("id = ?", id).Updates(updates).Error
+	return nil
 }
 
 func (*DeclarationDao) GetDeclarationsByApplicationIdAndStatus(db *gorm.DB, applicationId int64, status string) ([]*Declaration, error) {

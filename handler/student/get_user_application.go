@@ -1,4 +1,4 @@
-package application
+package student
 
 import (
 	"strconv"
@@ -30,8 +30,8 @@ func GetUserApplication(c *gin.Context) {
 		Limit: limit,
 	}
 
-	applicationService := service.NewApplicationService(c)
-	list, total, err := applicationService.GetUserApplication(entity)
+	studentService := service.NewStudentService(c)
+	list, total, err := studentService.GetUserApplication(entity)
 	if err != nil {
 		response.SendInternalServerError(c, errno.ErrBind, nil, err.Error())
 		return
